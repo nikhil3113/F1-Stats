@@ -10,7 +10,7 @@ const Home = () => {
   const setSeason = useSetRecoilState(seasonState);
   const date = useRecoilValue(dateState);
   
-  const deboucedValue = useDebouce({ inputValue: date, delay: 2000 });
+  const deboucedValue = useDebouce({ inputValue: date, delay: 1000 });
   useEffect(() => {
     axios
       .get(`http://ergast.com/api/f1/${deboucedValue}.json`)
