@@ -20,9 +20,9 @@ interface RaceResults {
   Constructor: {
     name: string;
   };
-  Time: {
-    millis: string,
-    time: string
+  Time?: {
+    millis?: string;
+    time?: string;
   };
   points: string;
 }
@@ -44,41 +44,48 @@ const Results = () => {
         console.error(error);
       });
   }, [date, round]);
+
   return (
-    <div>
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       <Header />
-      <h1 className="text-center text-3xl mb-8 font-bold pl-20 max-sm:pl-0">
-        Results
-      </h1>
-      <div className="px-10">
-        <Table>
-          <TableHeader>
-            <TableRow className="text-xl">
-              <TableHead>Position</TableHead>
-              <TableHead>Driver</TableHead>
-              <TableHead>Constructor</TableHead>
-              <TableHead>Time</TableHead>
-              <TableHead>Points</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody className="font-semibold text-base">
-            {results.map((results: RaceResults) => (
-              <TableRow key={results.position}>
-                <TableCell>{results.position}</TableCell>
-                <TableCell>{results.Driver.familyName.toUpperCase()}</TableCell>
-                <TableCell>{results.Constructor.name}</TableCell>
-                <TableCell>
-                  {results && results.Time && results.Time.millis
-                    ? results.Time.time
-                    : results.status.endsWith("Lap") || results.status.endsWith("Laps")
-                    ? results.status
-                    : "DNF"}
-                </TableCell>
-                <TableCell className="pl-8">{results.points}</TableCell>
+      <div className="max-w-5xl mx-auto px-4 py-10">
+        <h1 className="text-center text-4xl font-extrabold mb-8 tracking-wide">
+          Race Results
+        </h1>
+        
+        <div className="bg-white dark:bg-gray-800 shadow-lg rounded-xl overflow-hidden">
+          <Table className="w-full border-collapse">
+            <TableHeader className="bg-gray-200 dark:bg-gray-700">
+              <TableRow className="text-lg text-gray-700 dark:text-gray-200 uppercase">
+                <TableHead className="py-4 text-center">Position</TableHead>
+                <TableHead className="py-4 text-center">Driver</TableHead>
+                <TableHead className="py-4 text-center">Constructor</TableHead>
+                <TableHead className="py-4 text-center">Time</TableHead>
+                <TableHead className="py-4 text-center">Points</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody className="text-lg">
+              {results.map((result) => (
+                <TableRow
+                  key={result.position}
+                  className="hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                >
+                  <TableCell className="py-3 text-center font-bold">{result.position}</TableCell>
+                  <TableCell className="py-3 text-center">{result.Driver.familyName.toUpperCase()}</TableCell>
+                  <TableCell className="py-3 text-center">{result.Constructor.name}</TableCell>
+                  <TableCell className="py-3 text-center">
+                    {result.Time?.millis
+                      ? result.Time.time
+                      : result.status.includes("Lap")
+                      ? result.status
+                      : "DNF"}
+                  </TableCell>
+                  <TableCell className="py-3 text-center font-semibold">{result.points}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </div>
     </div>
   );

@@ -14,6 +14,7 @@ import {
 import Shimmer from "./Shimmer";
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
+import { CalendarIcon, MapPinIcon, TrophyIcon } from "lucide-react";
 
 interface CircuitLocation {
   locality: string;
@@ -87,57 +88,68 @@ const Cards = ({ date }: CardsProps) => {
   }, [season, date, setLoading]);
 
   return (
-    <div className="grid grid-cols-3 max-sm:grid-cols-1 ">
-      {loading ? (
-        <Shimmer count={6} />
-      ) : season.length > 0 ? (
-        season.map((item) => {
-          return (
+    <div className="container mx-auto px-4 py-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {loading ? (
+          <Shimmer count={6} />
+        ) : season.length > 0 ? (
+          season.map((item) => (
             <Card
               key={item.round}
-              className="p-8 m-3 shadow-lg dark:bg-gray-200 dark:text-black rounded-lg bg-primary text-white"
+              className="overflow-hidden transition-all duration-300 hover:shadow-xl dark:bg-gray-800 dark:border-gray-700"
             >
-              <CardHeader>
-                <CardTitle className="text-2xl font-bold">
+              <CardHeader className="bg-primary text-primary-foreground p-4">
+                <CardTitle className="text-xl font-bold truncate">
                   {item.raceName}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="my-2">
-                <p className="font-semibold">
-                  {item.Circuit.Location.locality}
-                </p>
-                <div className="flex justify-between">
-                  <p className="mt-2">{item.date}</p>
-                  {winners[item.round] == "UPCOMING" ? (
-                    <Countdown
-                      date={Date.now() + timeRemaining(item.date)}
-                      className="font-semibold text-[18px]"
-                    >
-                      <p>{winners[item.round] || "Loading...."}</p>
-                    </Countdown>
-                  ) : (
-                    <p className="font-semibold text-[18px]">
-                      {" "}
-                      {winners[item.round] || "Loading..."}
-                    </p>
-                  )}
+              <CardContent className="p-4 space-y-4">
+                <div className="flex items-center text-sm">
+                  <MapPinIcon className="w-4 h-4 mr-2" />
+                  <span>{item.Circuit.Location.locality}</span>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center">
+                    <CalendarIcon className="w-4 h-4 mr-2" />
+                    <span>{item.date}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <TrophyIcon className="w-4 h-4 mr-2" />
+                    {winners[item.round] === "UPCOMING" ? (
+                      <Countdown
+                        date={Date.now() + timeRemaining(item.date)}
+                        className="font-semibold"
+                      >
+                        <span>Race Day!</span>
+                      </Countdown>
+                    ) : (
+                      <span className="font-semibold">
+                        {winners[item.round] || "TBA"}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </CardContent>
-              <CardFooter className="flex ">
-                <Link to={`/results?date=${date}&round=${item.round}`} className="relative right-2 mt-3">
-                  <Button variant={"secondary"} >Check Result</Button>
+              <CardFooter className="bg-gray-50 dark:bg-gray-900 p-4">
+                <Link
+                  to={`/results?date=${date}&round=${item.round}`}
+                  className="w-full"
+                >
+                  <Button variant="secondary" className="w-full">
+                    Check Result
+                  </Button>
                 </Link>
               </CardFooter>
             </Card>
-          );
-        })
-      ) : (
-        <div className="flex justify-center items-center mt-10">
-          <h1 className="text-2xl font-bold text-center ">
-            No Data Found for Given Year
-          </h1>
-        </div>
-      )}
+          ))
+        ) : (
+          <div className="col-span-full flex justify-center items-center mt-10">
+            <h1 className="text-2xl font-bold text-center">
+              No Data Found for Given Year
+            </h1>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
